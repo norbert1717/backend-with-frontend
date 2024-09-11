@@ -1,7 +1,9 @@
 
 /* 
 cd mappaváltás
-cd.. előző mappába ugrás */
+cd.. előző mappába ugrás
+settimeout - megadom, hogy hiába olvasta be a fájlt a backend, 5 mp-vel később küldje a választ
+ */
 
 
 const express = require('express')
