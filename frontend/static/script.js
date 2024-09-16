@@ -14,7 +14,9 @@ form-ot használjuk adatközlésre a weboldalon
 formon belül a submint eseményt le kell tiltani, mert bármit írunk bele, és rányomunk a gombra
 az oldal újratöltődik, és a html-be kiírja a megadott adatokat
 és új eseményt kell megadni neki, összegyűjteni az adatokat és elküldeni a backendnek
-input elementeket megtudjuk különböztetni a name-nek köszönhetően */
+input elementeket megtudjuk különböztetni a name-nek köszönhetően 
+getinputvalue-val ki tudjuk szervezni az adatok begyűjtését és nem kell annyi kódot írni
+a backend egyelőre nem tudja kiszedni ezeket az adatokat, erre kell a backendet megszerkeszteni*/
 
 console.log("loaded");
 
@@ -40,6 +42,8 @@ const newDrinkElement = () => `
   </form>
 `;
 
+const getInputValue = (name) => document.querySelector(`input[name="drink-${name}"]`).value
+
 fetch("/data")
   .then(res => res.json())
   .then(data => {
@@ -60,10 +64,10 @@ fetch("/data")
       console.log("event trigger");
 
       const newDrinkData = {
-        name: formElement.querySelector('input[name="drink-name"]').value,
-        desc: formElement.querySelector('input[name="drink-abv"]').value,
-        abv: formElement.querySelector('input[name="drink-desc"]').value,
-        price: formElement.querySelector('input[name="drink-price"]').value
+        name: getInputValue("name"),
+        desc: getInputValue("desc"),
+        abv: Number(getInputValue("abv")),
+        price: Number(getInputValue("price"))
       }
 
       console.log(newDrinkData);
@@ -76,7 +80,13 @@ fetch("/data")
         body: JSON.stringify(newDrinkData)
       })
         .then(res => res.json())
-        .then(resJson => console.log(resJson))
+        .then(resJson => {
+          if (resJson === "success") {
+            drinksHtml += drinkCard(newDrinkData);
+            const drinksContainerElement = document.querySelector("div.drinks");
+            drinksContainerElement.innerHTML = drinksHtml;
+          }
+        })
     })
 })
 
