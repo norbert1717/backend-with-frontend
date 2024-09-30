@@ -1,0 +1,1 @@
+export const createFormSubmitEvent = (form, handleSubmit, rootElement) => form.addEventListener("submit", event => handleSubmit(event, rootElement));

@@ -16,16 +16,40 @@ az oldal újratöltődik, és a html-be kiírja a megadott adatokat
 és új eseményt kell megadni neki, összegyűjteni az adatokat és elküldeni a backendnek
 input elementeket megtudjuk különböztetni a name-nek köszönhetően 
 getinputvalue-val ki tudjuk szervezni az adatok begyűjtését és nem kell annyi kódot írni
-a backend egyelőre nem tudja kiszedni ezeket az adatokat, erre kell a backendet megszerkeszteni*/
+a backend egyelőre nem tudja kiszedni ezeket az adatokat, erre kell a backendet megszerkeszteni
 
-console.log("loaded");
 
-const drinkCard = (drinkData) => `
+drinkcard - drinkdatabol készít egy html elemet
+newdrinkelement - html stringet dob vissza az új elemeknek
+getinputvalue - megkeresi az input mezőt, ahol a drink atributumánál meg van a név és kiszedi a value értékét
+fetch - data endpointot lefetcheli
+  drnkshtml elkészítése
+  data-n loopolva létrehozza a drinkcard elemeket
+rootelement kiszelektálása és divbe foglalja a drinkshtml-t
+végén hozzáfűzzük a newdrinkelementet, ami a submit eseményt figyeli(ha a formon van egy gomb, ahol le lehet futtatni ezt az eseményt
+event.preventdefaulttal letiltja, hogy az url-be ki tegye az elemeket
+newdrinkdata létrehozása a getinputvalue segitségével
+/data/new endpoint fetchelése, ami egy post request a body-ba pedig tegye bele a newdrinkdatat
+.then - hibakeresés, hogy ha a file irás során hibába ütközne
+ha nincs hibánk átmegyünk a következő .then ágba - */
+
+
+import { recreateDom } from './functions/recreateDom.js';
+
+const rootElement = document.querySelector("#root");
+
+const init = () => recreateDom(rootElement);
+
+init();
+
+/* const drinkCard = (drinkData) => `
   <div class="drink">
     <h2>${drinkData.name}</h2>
+    <h3>${drinkData.id}</h3>
     <p class="drink-abv">${drinkData.abv}%</p>
     <p class="drink-desc">${drinkData.desc}</p>
     <p class="drink-price">${drinkData.price} HUF</p>
+    <button class="delete">delete</button>
   </div>
 `;
 
@@ -48,20 +72,39 @@ fetch("/data")
   .then(res => res.json())
   .then(data => {
     console.log(data);
-    
+    let drinksData = data;
+
     let drinksHtml = "";
 
-    data.forEach(drinkData => drinksHtml += drinkCard(drinkData));
+    drinksData.forEach(drinkData => drinksHtml += drinkCard(drinkData));
 
     const rootElement = document.querySelector("#root");
     rootElement.insertAdjacentHTML("beforeend", `<div class="drinks">${drinksHtml}</div>`);
+
+    const buttonElements = document.querySelectorAll('button.delete');
+    console.log(buttonElements);
+    buttonElements.forEach(button => button.addEventListener("click", () => {
+      const buttonContainer = button.parentElement;
+      const searchId = buttonContainer.querySelector("h3").innerHTML;
+      console.log(searchId);
+
+      fetch(`/data/delete/${searchId}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(resData => {
+          if (resData === searchId) {
+            buttonContainer.remove();
+            const filteredData = drinksData.filter(drinkData => drinkData.id !== searchId);
+            drinksData = filteredData;
+            drinksHtml = "";
+            drinksData.forEach(drinkData => drinksHtml += drinkCard(drinkData));
+          }
+        })
+    }))
 
     rootElement.insertAdjacentHTML("beforeend", newDrinkElement());
     const formElement = document.querySelector("form");
     formElement.addEventListener("submit", (event) => {
       event.preventDefault();
-
-      console.log("event trigger");
 
       const newDrinkData = {
         name: getInputValue("name"),
@@ -70,8 +113,6 @@ fetch("/data")
         price: Number(getInputValue("price"))
       }
 
-      console.log(newDrinkData);
-
       fetch('/data/new', {
         method: 'POST',
         headers: {
@@ -79,14 +120,20 @@ fetch("/data")
         },
         body: JSON.stringify(newDrinkData)
       })
-        .then(res => res.json())
-        .then(resJson => {
-          if (resJson === "success") {
-            drinksHtml += drinkCard(newDrinkData);
-            const drinksContainerElement = document.querySelector("div.drinks");
-            drinksContainerElement.innerHTML = drinksHtml;
+        .then(res => {
+          if (res.status === 500) {
+            throw new Error(res.json());
           }
+          return res.json();
         })
+        .then(resData => {
+          newDrinkData.id = resData;
+          drinksHtml += drinkCard(newDrinkData);
+          const drinksContainerElement = document.querySelector("div.drinks");
+          drinksContainerElement.innerHTML = drinksHtml;
+        })
+        .catch(err => {
+          console.log(err)
+        }) 
     })
-})
-
+  }) */

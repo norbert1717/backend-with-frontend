@@ -1,0 +1,1 @@
+export const getDrinksData = () => fetch('/data').then(res => res.json());

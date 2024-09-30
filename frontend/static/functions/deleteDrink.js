@@ -1,0 +1,1 @@
+export const deleteDrink = (drinkId) => fetch(`/data/delete/${drinkId}`, { method: 'DELETE' }).then(res => res.json());
