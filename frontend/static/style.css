@@ -40,15 +40,29 @@ div.drink h2 {
   font-weight: 700;
 }
 
+div.drink div.abv-container {
+  display: flex;
+}
+
+div.drink div.price-container {
+  display: flex;
+  gap: 5px;
+}
+
 form {
   border: 2px solid black;
 
   width: 100%;
   max-width: 300px;
+  margin-top: 50px;
 
   padding: 20px;
 
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+form input[name="drink-abv"] {
+  max-width: 80%;
 }

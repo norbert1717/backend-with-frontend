@@ -31,8 +31,25 @@ event.preventdefaulttal letiltja, hogy az url-be ki tegye az elemeket
 newdrinkdata létrehozása a getinputvalue segitségével
 /data/new endpoint fetchelése, ami egy post request a body-ba pedig tegye bele a newdrinkdatat
 .then - hibakeresés, hogy ha a file irás során hibába ütközne
-ha nincs hibánk átmegyünk a következő .then ágba - */
+ha nincs hibánk átmegyünk a következő .then ágba -
 
+2024.10.12
+minden kártyához edit gombot akarunk hozzáadni
+drinkcard - gomb beletétele edit classal
+
+recreatedom fileban az editbuttonelements-et létrehozzuk
+utána pedig egy file createbuttonclickevents néven, aminek szüksége van egy paraméterre,
+  ami elmondja, hogy milyen elemeken akarjuk elvégezni az eventet, 
+
+handleeditbuttonclick file - formelement megkeresése(az a doboz, ahova az új elemeket tudjuk beleírni)
+  formon belül is megtudjuk találni az adott elemeket
+    formtitleelement - h2 megkeresése, majd innerhtml szerkesztése
+    input mezőket is lehet szerkeszteni ugyanígy
+      az input mezőknek value értéke van
+  getelementext függvény átvesz egy selector paramétert és a button parentelementje átveszi a selectort
+  getformelement - inputname - formon belül kiszelektálja azt az elemet, aminek a név atributuma az, hogy inputname
+  
+*/
 
 import { recreateDom } from './functions/recreateDom.js';
 

@@ -1,38 +1,30 @@
 [
   {
-    "name": "Champagne",
-    "price": 7690,
-    "desc": "fruity champagne",
-    "abv": 12
+    "name": "beer",
+    "desc": "edelweiss",
+    "abv": 6,
+    "price": 599,
+    "id": "9547428754"
   },
   {
-    "name": "Whiskey",
-    "price": 8490,
-    "desc": "all-round whiskey",
-    "abv": 40
+    "name": "beer",
+    "price": "399",
+    "desc": "soproni",
+    "abv": "3",
+    "id": "6350291593"
   },
   {
-    "name": "Gin",
-    "price": 12490,
-    "desc": "hungarian gin with grape",
-    "abv": 40
+    "name": "beer",
+    "desc": "1664 blanc",
+    "abv": 4,
+    "price": 499,
+    "id": "7202117880"
   },
   {
-    "name": "Rum",
-    "price": 8190,
-    "desc": "basic rum",
-    "abv": 37.5
-  },
-  {
-    "name": "Beer",
-    "price": 569,
-    "desc": "refreshing beer",
-    "abv": 5
-  },
-  {
-    "name": "Vodka",
-    "desc": "whoeee",
-    "abv": 40,
-    "price": 9999
+    "name": "beer",
+    "desc": "peroni",
+    "abv": 5,
+    "price": 399,
+    "id": "2491426017"
   }
 ]

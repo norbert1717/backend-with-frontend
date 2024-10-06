@@ -82,13 +82,27 @@ return-el ki kell egészíteni a függvényt, hogy legyen visszatérési érték
 /data/new enpdointnál bővebb a kód, itt nem tudja kiváltani az egész callbacket
 arrayofId-s array: végig iterál az arrayen a find metódus és megnézi, hogy az elem egyezik-e a newId-val
 
+/*2024.09.30
+updatelés
+put request - minden adatot elküldünk a frontendről, objektumot és a benne lévő adatot megváltoztatjuk
+a put pedig felül irja egy másik objektummal
+app.put endpoint létrehozása
+  be kell olvasni az adatot, meg kell keresni az objektumot, amit updatelni akarjuk
+  egész objektum updatelése, write file, válasz küldése a frontendnek
+  id kimentése egy változóba
+  objectkeys - req.body-ból kiszedjük a kulcsok neveit
+  utána foreach, found key kulcsánál az érték legyen az, mint a req.bodynál
+
+patch endpoint
+  ugyanaz, mint a putnál
+  a csak megküldött adatokat kell neki updatelni
 */
 
 
 import express from 'express';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { readFile, writeFile } from 'fs';
+import { writeFile } from 'fs';
 import { readFile as readFilePromise } from 'fs/promises';
 
 const app = express();
@@ -157,6 +171,47 @@ app.post('/data/new', async (req, res) => {
     console.log("error at writing file", err);
     res.status(500).json("error at writing file");
   }
+});
+
+app.put('/data/put/:id', async (req, res) => {
+  const searchId = req.params.id;
+
+  const fileData = await readAndParseFile(DRINKS_URL);
+
+  const found = fileData.find(obj => obj.id === searchId);
+
+  if (!found) {
+    return res.status(404).json(`no object found with id ${searchId}`);
+  }
+  
+  /* const objectKeys = Object.keys(req.body);
+  objectKeys.forEach(key => found[key] = req.body[key]); */
+
+  const filteredFileData = fileData.filter(obj => obj.id !== searchId);
+
+  // optional task: insert the new object to the same place that the old object was deleted from
+
+  const updatedDrink = {...req.body, id: searchId};
+  filteredFileData.push(updatedDrink);
+
+  writeFile(DRINKS_URL, JSON.stringify(filteredFileData, null, 2), () => res.json(`${searchId} has been updated successfully`));
+});
+
+app.patch('/data/patch/:id', async (req, res) => {
+  const searchId = req.params.id;
+
+  const fileData = await readAndParseFile(DRINKS_URL);
+
+  const found = fileData.find(obj => obj.id === searchId);
+
+  if (!found) {
+    return res.status(404).json(`no object found with id ${searchId}`);
+  }
+  
+  const objectKeys = Object.keys(req.body);
+  objectKeys.forEach(key => found[key] = req.body[key]);
+
+  writeFile(DRINKS_URL, JSON.stringify(fileData, null, 2), () => res.json("ok"));
 });
 
 app.delete('/data/delete/:id', async (req, res) => {
